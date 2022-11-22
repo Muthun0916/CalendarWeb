@@ -30,7 +30,7 @@ body {
   font-size: 25px;
 }
 
-#group_name{
+.group_name{
  position:relative;
  top:-25%;
 }
@@ -94,9 +94,10 @@ th {
 }
 th, td {
     outline: 1px solid #ddd;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     text-align: center;
+    background-color: white;
 }
 /*日曜日*/
 td:first-child {
@@ -165,6 +166,7 @@ td.today {
 #member{
   overflow: scroll;
   height: 80%;
+  border: 1px solid black;
 }
 
 #member_content{

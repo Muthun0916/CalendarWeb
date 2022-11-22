@@ -6,20 +6,21 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>CalendarBookService</title>
   <link rel="stylesheet" type="text/css" href="index.css"/>
-  <script type="text/javascript" src="myschedule.js"></script>
+
 </head>
 <div class="top">
   <a href="index.html">ログアウト</a>
-  <a href="mypage.html">マイページ</a>
+  <a id="tomypage" href="mypage.html">マイページ</a>
 
 </div>
 <br>
 <body>
-  <span id="title">ひらっちさんのスケジュール</span><br>
+  <span id="title"></span><br>
   <div class="text-ani_sample">
       <p>現在新着の予約はありません。</p>
   </div>
-  <div class="form">
+  <div>
+    <div id="explain">予定を入力してください。</div>
     <div class="wrapper">
   <!-- xxxx年xx月を表示 -->
   <h1 id="header"></h1>
@@ -39,5 +40,6 @@
   </div>
 
 </body>
+  <script type="text/javascript" src="myschedule.js"></script>
 
 </html>

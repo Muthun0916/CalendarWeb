@@ -4,23 +4,15 @@ function sendWithGetMethodLogin() {
 	var userElement = document.getElementById("user");
 	var pwElement = document.getElementById("password");
 
-	var url = "doGet?user=" + userElement.value +"&pw=" + pwElement.value;
+	var url = "doGet?method=login&user=" + userElement.value +"&password=" + pwElement.value+"d";
 
+	console.log(userElement.value);
+	console.log(pwElement.value);
 	xmlHttpRequest = new XMLHttpRequest();
 	xmlHttpRequest.onreadystatechange = receive;
 	xmlHttpRequest.open("GET", url, true);
 	xmlHttpRequest.send(null);
-	if(userElement.value==""||pwElement.value==""){
-		var cauntionElement = document.getElementById("cauntion");
-		if(cauntionElement.childElementCount==0){
-			var newElement = document.createElement("span");
-			var newContent = document.createTextNode("ユーザーデータが存在しないか、パスワードが違います。");
-			newElement.appendChild(newContent);
-			cauntionElement.appendChild(newElement);
-		}
-	}else{
-		window.location.href =　"mypage.html";
-	}
+
 }
 
 function sendWithGetMethodSignup(){
@@ -30,9 +22,21 @@ function sendWithGetMethodSignup(){
 function receive() {
 	if(xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
 		var response = JSON.parse(xmlHttpRequest.responseText);
+		var output = response.output;
 
-		var outputElement = document.getElementById("output");
-		outputElement.innerHTML = response.output;
+		if(output=="success"){
+			window.location.href =　"mypage.html?user="+response.user;
+		}else if(output=="decline"){
+			var cauntionElement = document.getElementById("cauntion");
+			if(cauntionElement.childElementCount==0){
+				var newElement = document.createElement("span");
+				var newContent = document.createTextNode("ユーザーデータが存在しないか、パスワードが違います。");
+				newElement.appendChild(newContent);
+				cauntionElement.appendChild(newElement);
+			}
+		}
+
+
 	}
 }
 

@@ -5,10 +5,8 @@ var frends_list = document.getElementById("groups")
 for(var i=0;i<100;i++){
   var gpButton = document.createElement("button");
   gpButton.className = "group_button";
-  //gpButton.setAttribute("id", "frend_button");
-  //var gpContent = document.createTextNode("チェンバーファン同好会");
-  var nameContent = "<span id='group_name'>チェンバーファン同好会</span>"
-  var imgContent = "<img src='favicon.png' width='70' height='70'>"
+  var nameContent = "<span class='group_name'>チェンバーファン同好会</span>";
+  var imgContent = "<img src='favicon.png' width='70' height='70'>";
   gpButton.insertAdjacentHTML("afterbegin",nameContent);
   gpButton.insertAdjacentHTML("afterbegin",imgContent);
   //gpButton.appendChild(gpContent);
