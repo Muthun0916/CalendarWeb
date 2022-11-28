@@ -24,6 +24,7 @@ function next(){
 }
 
 function theday(year,month,day){
+  console.log(year+"/"+month+"/"+day)
   var dateMsg =document.getElementById("date");
   dateMsg.innerText=year+"年"+month+"月"+day+"日の予定";
   modal.style.display = 'block';
@@ -88,14 +89,13 @@ function createProcess(year, month) {
                   && month == (today.getMonth())
                   && count == today.getDate()){
                     calendar += "<td id = day"+count+" class='today'>" + count +
-                     "<br><input TYPE='button' onclick='theday("+year+","+month+","+count+")' class="+
-                     (changes[year+"/"+month+"/"+count] ? getMark(changes[year+"/"+month+"/"+count]):"circle")+
-                     " VALUE="+(changes[year+"/"+month+"/"+count]?changes[year+"/"+month+"/"+count]:"○")+"></td>";
+                     "<br><input TYPE='button' onclick='theday("+year+","+(month+1)+","+count+")' class="+
+                     (changes[year+"/"+(month+1)+"/"+count] ? getMark(changes[year+"/"+(month+1)+"/"+count]):"circle")+
+                     " VALUE="+(changes[year+"/"+(month+1)+"/"+count]?changes[year+"/"+(month+1)+"/"+count]:"○")+"></td>";
                 } else {
                     calendar += "<td id = day"+count+">" + count +
-                    "<br><input TYPE='button' onclick='theday("+year+","+month+","+count+")' class="+
-                    (changes[year+"/"+month+"/"+count] ? getMark(changes[year+"/"+month+"/"+count]):"circle")+
-                    "  VALUE="+(changes[year+"/"+month+"/"+count]?changes[year+"/"+month+"/"+count]:"○")+"></td>";
+                    "<br><input TYPE='button' onclick='theday("+year+","+(month+1)+","+count+")' class="+"circle"+
+                    "  VALUE="+"○"+"></td>";
                 }
             }
         }

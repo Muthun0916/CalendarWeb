@@ -50,6 +50,16 @@ public class Database implements Serializable{
 		copyToIte();
 	}
 	
+	public Schedule getSchedule(String schedulename) {
+		copyToIte();
+		while(scheIte.hasNext()) {
+			Schedule schedule = scheIte.next();
+			if(schedule.getName().equals(schedulename)) 
+				return schedule;
+		}
+		return null;
+	}
+	
 	
 	public void removeUser(String username) {
 		copyToIte();
@@ -57,7 +67,7 @@ public class Database implements Serializable{
 			if(((User)userIte.next()).getName().equals(username)) 
 				userIte.remove();
 		}
-		copyToArray();
+		//copyToArray();
 	}
 	
 	public void removeSchedule(String schedulename) {
@@ -66,7 +76,7 @@ public class Database implements Serializable{
 			if(((Schedule)scheIte.next()).getName().equals(schedulename)) 
 				scheIte.remove();
 		}
-		copyToArray();
+		//copyToArray();
 	}
 	
 	public ArrayList<User> getUserList(){
@@ -90,6 +100,16 @@ public class Database implements Serializable{
 				return user;
 		}
 		return null;
+	}
+	
+	public void setUser(User user) {
+		removeUser(user.getName());
+		addUser(user);
+	}
+	
+	public void setSchedule(Schedule schedule) {
+		removeSchedule(schedule.getName());
+		addSchedule(schedule);
 	}
 	
 	public ArrayList<Schedule> getScheduleList(){

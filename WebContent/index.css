@@ -180,6 +180,19 @@ td.today {
   bottom:10px;
   font-size: 20px;
 }
+
+#createGroupButton{
+  font-size: 20px;
+}
+
+#addFriendButton{
+  font-size: 20px;
+}
+
+#addFriend{
+  font-size: 30px;
+}
+
 /*ボタン*/
 #next-prev-button {
     position: relative;
@@ -203,6 +216,30 @@ td.today {
 }
 #next {
     float: right;
+}
+
+.addfModal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.addcModal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
 }
 
 .modal {

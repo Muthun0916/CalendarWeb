@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,8 +102,8 @@ public class CalendarServlet extends HttpServlet {
 
 		}else if(method.equals("myscheduleRegister")) {
 			String username = request.getParameter("user");
-			System.out.println(request.getQueryString());
-			System.out.println(getQueryMap(request.getQueryString()));
+			//System.out.println(request.getQueryString());
+			//System.out.println(getQueryMap(request.getQueryString()));
 			Map<Date, String> dates = getQueryMap(request.getQueryString());
 			Database base  = Fileloader.read();
 			Schedule change = base.getUesr(username).getSchedule();
@@ -117,6 +118,98 @@ public class CalendarServlet extends HttpServlet {
 			builder.append("\"output\":\"").append("success").append("\"");
 			builder.append('}');
 
+		}else if(method.equals("gpLoad")) {
+			String username = request.getParameter("user");
+			
+			Database base  = Fileloader.read();
+			System.out.println(base.getUserList().toString());
+			User user = base.getUesr(username);
+			//ArrayList<String> strs = new ArrayList<>();
+			builder.append('{');
+			builder.append("\"user\":\"").append(username).append("\",");
+			builder.append("\"groups\":\"").append(user.getGroupList()).append("\",");
+			builder.append("\"output\":\"").append("gpLoad").append("\"");
+			builder.append('}');
+					
+					
+		}else if(method.equals("gpscheduleGet")) {
+			String username = request.getParameter("user");
+			
+			Database base  = Fileloader.read();
+			User user = base.getUesr(username);
+			ArrayList<String> groups = user.getGroupList();
+			
+			builder.append('{');
+			builder.append("\"user\":\"").append(username).append("\",");
+			builder.append("\"output\":\"").append("success").append("\"");
+			builder.append('}');
+			
+					
+					
+		}else if(method.equals("createGroup")) {
+			String username = request.getParameter("user");
+			String groupName = request.getParameter("groupName");
+			System.out.println(groupName+"作成");
+			Database base  = Fileloader.read();
+			User user = base.getUesr(username);
+			user.addGroup(groupName);
+			//初期のメンバーをセット
+			ArrayList<String> users = new ArrayList<>();
+			users.add(user.getName());
+			base.addSchedule(new Schedule(groupName,users));
+			base.setUser(user);
+			Fileloader.write(base);
+			
+			builder.append('{');
+			builder.append("\"user\":\"").append(username).append("\",");
+			builder.append("\"output\":\"").append("success").append("\"");
+			builder.append('}');
+			
+			
+		}else if(method.equals("loadMember")) {
+			String username = request.getParameter("user");
+			String groupName = request.getParameter("groupName");
+			Database base  = Fileloader.read();
+			System.out.println(groupName);
+			System.out.println(base.getScheduleList());
+			
+			builder.append('{');
+			builder.append("\"user\":\"").append(username).append("\",");
+			builder.append("\"groupName\":\"").append(groupName).append("\",");
+			builder.append("\"member\":\"").append(base.getSchedule(groupName).getMember()).append("\",");
+			builder.append("\"output\":\"").append("memberLoad").append("\"");
+			builder.append('}');
+					
+		}
+		else if(method.equals("addMember")) {
+			String username = request.getParameter("user");
+			String groupName = request.getParameter("groupName");
+			String addedMember = request.getParameter("memberName");
+			Database base  = Fileloader.read();
+			Schedule schedule = base.getSchedule(groupName);
+			//存在するメンバーであるかつまだ追加されていないメンバー
+			System.out.println(base.isExistUser(addedMember));
+			System.out.println(schedule.isMember(addedMember));
+
+			builder.append('{');
+			builder.append("\"user\":\"").append(username).append("\",");
+			builder.append("\"groupName\":\"").append(groupName).append("\",");
+			builder.append("\"newMember\":\"").append(addedMember).append("\",");
+			builder.append("\"method\":\"").append("addMember").append("\",");
+			if(base.isExistUser(addedMember)&&(!schedule.isMember(addedMember))) {
+				schedule.addMember(addedMember);
+				User addedUser = base.getUesr(addedMember);
+				addedUser.addGroup(groupName);
+				base.setSchedule(schedule);
+				base.setUser(addedUser);
+				Fileloader.write(base);
+				
+				builder.append("\"output\":\"").append("success").append("\"");
+			}else {
+				builder.append("\"output\":\"").append("decline").append("\"");
+			}
+			builder.append('}');
+					
 		}
 		String json = builder.toString();
 		System.out.println(json);

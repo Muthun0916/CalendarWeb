@@ -59,6 +59,18 @@ public class User implements Serializable{
 		this.schedule = schedule;
 	}
 	
+	public void addGroup(String name) {
+		groupList.add(name);
+	}
+	
+	public void removeGroup(String name) {
+		groupList.remove(name);
+	}
+	
+	public boolean isHasGroup(String name) {
+		return groupList.contains(name);
+	}
+	
 	public ArrayList<String> getGroupList(){
 		return groupList;
 	}

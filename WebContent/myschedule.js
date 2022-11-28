@@ -81,10 +81,20 @@ function getDecode(code) {
   }
 }
 
+function expCalendar(){
+  var calendar = document.getElementById("calendar");
+  calendar.style.visibility = "visible";
+  var cheader = document.getElementById("header");
+  cheader.style.visibility = "visible";
+  var cButton = document.getElementById("next-prev-button");
+  cButton.style.visibility = "visible";
+}
+
 window.addEventListener("load", function() {
   var expButtonElement = document.getElementById("exp_button");
   expButtonElement.addEventListener("click", MyscheduleRegister, false);
   MyscheduleGet();
+  expCalendar();
 }, false);
 
 /*

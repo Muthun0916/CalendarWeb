@@ -5,52 +5,80 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>CalendarBookService</title>
-  <link rel="stylesheet" type="text/css" href="index.css"/>
+  <link rel="stylesheet" type="text/css" href="index.css" />
 
 </head>
 <div class="top">
   <a href="index.html">ログアウト</a>
-  <a href="mypage.html">マイページ</a>
+  <a id ="mypage" href="mypage.html">マイページ</a>
 </div>
 <br>
 
 <body>
   <span id="title">現在所属しているグループ</span><br>
   <div class="text-ani_sample">
-      <p>現在新着の予約はありません。</p>
+    <p>現在新着の予約はありません。</p>
   </div>
 
   <div id="groups">
   </div>
   <div id="memberbox">
     <span id=memberTitle>メンバー 一覧</span>
+    <button id="addFriend">+</button>
     <div id=member>
       <div id=member_content>
-      
+
       </div>
     </div>
   </div>
   <div class="wrapper">
-<!-- xxxx年xx月を表示 -->
-<h1 id="header"></h1>
+    <!-- xxxx年xx月を表示 -->
+    <h1 id="header"></h1>
 
-<!-- ボタンクリックで月移動 -->
-<div id="next-prev-button">
+    <!-- ボタンクリックで月移動 -->
+    <div id="next-prev-button">
       <button id="prev" onclick="prev()">‹</button>
-    <button id="next" onclick="next()">›</button>
-</div>
+      <button id="next" onclick="next()">›</button>
+    </div>
 
-<!-- カレンダー -->
-<div id="calendar">
-</div>
-</div>
+    <!-- カレンダー -->
+    <div id="calendar">
+    </div>
+  </div>
+
+  <div id="addModal" class="addcModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1>グループ作成</h1>
+        <span class="modalClose"></span>
+      </div>
+      <div class="modal-body">
+        グループ名 : <input type="text" class="blank" id="groupName">
+        <button class="execute_button" id="createGroupButton">グループ作成</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="addMemberModal" class="addfModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1>メンバー作成</h1>
+        <span class="modalClose"></span>
+      </div>
+      <div class="modal-body">
+        追加するメンバー名 : <input type="text" class="blank" id="friendName">
+        <div id="cauntion"></div>
+        <button class="execute_button" id="addFriendButton">メンバー追加</button>
+      </div>
+    </div>
+  </div>
 
 
-<div id="easyModal" class="modal">
+  <div id="easyModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h1 id="date">YYYY年MM月DD日の予定</h1>
-        <span class="modalClose">×</span>
+        <span class="modalClose"></span>
       </div>
       <div class="modal-body">
         あなた以外にこのグループのメンバーは存在しません。<br>
@@ -61,7 +89,9 @@
 
 
 
+
 </body>
 <script type="text/javascript" src="gpschedule.js"></script>
 <script type="text/javascript" src="gpcalendar.js"></script>
+
 </html>

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 public class Fileloader {
 	
@@ -32,18 +33,15 @@ public class Fileloader {
 	
 
 	public static void main(String[] args) {
-		
-		/*
-		writeBase.addUser(user1);
-		writeBase.addUser(user2);
-		write(writeBase);
-		System.out.println(writeBase.getUserList().get(1).getName());
-		*/
+		init();
+		starting();
+		//showPw();
+	}
+	
+	public static void init() {
 		Database readBase = new Database();
-		//Database readBase  = read();
 		//デシリアライズしたあとにイテレーターは初期化されている。
 		//そのため再度使うにはcopyToIte()を実行する必要がある。
-		//System.out.println(writeBase.getUserList().get(1).getName());
 		for(User user:readBase.getUserList()) {
 			System.out.println(user.getName());
 		}
@@ -52,6 +50,42 @@ public class Fileloader {
 			System.out.println(user.getName());
 		}
 		write(readBase);
+	}
+	
+	public static void starting() {
+		Database base = read();
+		base.addUser(new User("a","ad"));
+		base.addUser(new User("b","bd"));
+		base.addUser(new User("c","cd"));
+		write(base);
+	}
+	
+	public static void showPw() {
+		Database base = read();
+		for(Schedule schedule :base.getScheduleList()) {
+			System.out.println(schedule.getName());
+		}
+	}
+	
+	public static void test1() {
+		Database base = new Database();
+		ArrayList<String> users = new ArrayList<>();
+		User user = new User("aaa","aaa");
+		users.add("aaa");
+		base.addSchedule(new Schedule("unti",users));
+		System.out.println(base.getScheduleList());
+		System.out.println(base.getUserList());
+		base.setUser(user);
+		System.out.println(base.getScheduleList());
+		System.out.println(base.getUserList());
+		write(base);
+		base = read();
+		System.out.println(base.getScheduleList());
+		System.out.println(base.getUserList());
+		base.removeUser("aaa");
+		System.out.println(base.getScheduleList());
+		System.out.println(base.getUserList());
+		
 	}
 
 }

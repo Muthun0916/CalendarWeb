@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Schedule implements Serializable{
 	
@@ -21,7 +22,6 @@ public class Schedule implements Serializable{
 	public Schedule(String name,ArrayList<String> users) {
 		this.name=name;
 		this.users=users;
-		this.schedule = new HashMap<Date, String>();
 	}
 	
 	public void register(Date date, String stuts) {
@@ -42,6 +42,28 @@ public class Schedule implements Serializable{
 	
 	public String getStuts(Date date) {
 		return schedule.get(date);
+	}
+	
+	public void addMember(String username) {
+		users.add(username);
+	}
+	
+	public void removeMember(String username) {
+		users.remove(username);
+	}
+	
+	public boolean isMember(String username) {
+		Iterator<String> userIte = users.iterator();
+		while(userIte.hasNext()) {
+			if(username.equals(userIte.next())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ArrayList<String> getMember(){
+		return users;
 	}
 	
 	
