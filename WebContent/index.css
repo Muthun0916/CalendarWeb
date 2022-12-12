@@ -294,6 +294,60 @@ td.today {
   color: black;
 }
 
+.tooltip { /* 補足説明するテキストのスタイル */
+  position: relative;
+  cursor: pointer;
+  padding: 0 5px;
+  font-size: 0.9em;
+  color: #4682b4;
+}
+
+.description_top { /* ツールチップのスタイル */
+  width: 150px; /* 横幅 */
+  position: absolute;
+  left: 50%;
+  bottom: 80%; /* Y軸の位置 */
+  transform: translateX(-50%);
+  margin-bottom: 8px; /* テキストとの距離 */
+  padding: 8px;
+  border-radius: 10px; /* 角の丸み */
+  background-color: #666;
+  font-size: 0.7em;
+  color: #fff;
+  text-align: center;
+  visibility: hidden; /* ツールチップを非表示に */
+  opacity: 0; /* 不透明度を0％に */
+  z-index: 1;
+  transition: 0.5s all; /* マウスオーバー時のアニメーション速度 */
+}
+
+.tooltip:hover .description_top { /* マウスオーバー時のスタイル */
+  bottom: 100%; /* Y軸の位置 */
+  visibility: visible; /* ツールチップを表示 */
+  opacity: 1; /* 不透明度を100％に */
+}
+
+#circleLabel{
+  background-color:LightGreen;
+  color:white;
+  height:30px;
+  font-size: 30px;
+}
+
+#triangleLabel{
+  background-color:orange;
+  color:white;
+  height:30px;
+  font-size: 30px;
+}
+
+#crossLabel{
+  background-color:red;
+  color:white;
+  height:30px;
+  font-size: 30px;
+}
+
 
 /*-------------------------
   右から左に流れるテキスト

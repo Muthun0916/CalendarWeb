@@ -9,8 +9,8 @@
 
 </head>
 <div class="top">
-  <a href="index.html">ログアウト</a>
-  <a id ="mypage" href="mypage.html">マイページ</a>
+  <a href="index.html">サインアウト</a>
+  <a id="mypage" href="mypage.html">マイページ</a>
 </div>
 <br>
 
@@ -54,7 +54,15 @@
       </div>
       <div class="modal-body">
         グループ名 : <input type="text" class="blank" id="groupName">
-        <button class="execute_button" id="createGroupButton">グループ作成</button>
+        <div style="text-align:left">
+          <input id="large_p" type="radio" name="priority" value="l" style="transform:scale(1.5);" checked>
+          <label for="large_p">多数優先(マークの1番多いものを表示します)</label><br>
+          <input id="all_p" type="radio" name="priority" value="a" style="transform:scale(1.5);">
+          <label for="all_p">全員優先(一人でも×がいれば×を表示します)</label><br>
+          <input id="small_p" type="radio" name="priority" value="s" style="transform:scale(1.5);">
+          <label for="small_p">一人以上優先(一人でも○がいれば○を表示します)
+        </div>
+        <button class="execute_button" id="createGroupButton">グループ作成</button><br><br>
       </div>
     </div>
   </div>
@@ -80,9 +88,9 @@
         <h1 id="date">YYYY年MM月DD日の予定</h1>
         <span class="modalClose"></span>
       </div>
-      <div class="modal-body">
-        あなた以外にこのグループのメンバーは存在しません。<br>
-        友達を招待してメンバーを増やしましょう。
+      <div id = "member-stuts" class="modal-body">
+        ここに表示する予定がありません。<br>
+        マイページにて自分の予定を設定しましょう。
       </div>
     </div>
   </div>
@@ -92,6 +100,6 @@
 
 </body>
 <script type="text/javascript" src="gpschedule.js"></script>
-<script type="text/javascript" src="gpcalendar.js"></script>
+
 
 </html>

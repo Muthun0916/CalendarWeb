@@ -35,7 +35,7 @@ public class Fileloader {
 	public static void main(String[] args) {
 		init();
 		starting();
-		//showPw();
+		//test2();
 	}
 	
 	public static void init() {
@@ -72,7 +72,7 @@ public class Fileloader {
 		ArrayList<String> users = new ArrayList<>();
 		User user = new User("aaa","aaa");
 		users.add("aaa");
-		base.addSchedule(new Schedule("unti",users));
+		base.addSchedule(new Schedule("unti",users,"a"));
 		System.out.println(base.getScheduleList());
 		System.out.println(base.getUserList());
 		base.setUser(user);
@@ -85,6 +85,21 @@ public class Fileloader {
 		base.removeUser("aaa");
 		System.out.println(base.getScheduleList());
 		System.out.println(base.getUserList());
+		
+	}
+	
+	public static void test2() {
+		Database base = new Database();
+		ArrayList<String> users = new ArrayList<>();
+		User user = new User("aaa","aaa");
+		users.add("aaa");
+		base.addSchedule(new Schedule("unti",users,"a"));
+		base.getSchedule("unti").showInfo();
+		base.setUser(user);
+		write(base);
+		base = read();
+		base.getSchedule("unti").showInfo();
+
 		
 	}
 

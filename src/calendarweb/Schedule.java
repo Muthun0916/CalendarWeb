@@ -12,6 +12,7 @@ public class Schedule implements Serializable{
 	private HashMap<Date,String> schedule;
 	private ArrayList<String> users;
 	private String name;
+	private String type;
 	
 	//マイスケジュール用
 	public Schedule() {
@@ -19,9 +20,16 @@ public class Schedule implements Serializable{
 	}
 	
 	//グループスケジュール用
-	public Schedule(String name,ArrayList<String> users) {
+	public Schedule(String name,ArrayList<String> users,String type) {
 		this.name=name;
 		this.users=users;
+		this.type=type;
+	}
+	
+	public void showInfo() {
+		System.out.println("name:"+name);
+		System.out.println("users:"+users);
+		System.out.println("type:"+type);
 	}
 	
 	public void register(Date date, String stuts) {
@@ -64,6 +72,14 @@ public class Schedule implements Serializable{
 	
 	public ArrayList<String> getMember(){
 		return users;
+	}
+	
+	public void setType(String type) {
+		this.type=type;
+	}
+	
+	public String getType() {
+		return type;
 	}
 	
 	

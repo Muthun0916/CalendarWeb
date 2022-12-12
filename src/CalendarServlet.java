@@ -78,7 +78,6 @@ public class CalendarServlet extends HttpServlet {
 				builder.append('}');
 			}
 
-
 		}else if(method.equals("mypage")) {
 			String username = request.getParameter("user");
 			builder.append('{');
@@ -93,10 +92,12 @@ public class CalendarServlet extends HttpServlet {
 			
 			builder.append('{');
 			builder.append("\"user\":\"").append(username).append("\",");
+			
 			for(Date date:dates.getDates().keySet()) {
 				SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 				builder.append("\"").append(df.format(date)).append("\":\"").append(dates.getDates().get(date)).append("\",");
 			}
+			
 			builder.append("\"output\":\"").append("init").append("\"");
 			builder.append('}');
 
@@ -118,6 +119,7 @@ public class CalendarServlet extends HttpServlet {
 			builder.append("\"output\":\"").append("success").append("\"");
 			builder.append('}');
 
+		//グループに所属しているメンバーを取得
 		}else if(method.equals("gpLoad")) {
 			String username = request.getParameter("user");
 			
@@ -131,17 +133,66 @@ public class CalendarServlet extends HttpServlet {
 			builder.append("\"output\":\"").append("gpLoad").append("\"");
 			builder.append('}');
 					
-					
+		//メンバーの予定を取得
 		}else if(method.equals("gpscheduleGet")) {
 			String username = request.getParameter("user");
+			String groupName = request.getParameter("groupName");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			
 			Database base  = Fileloader.read();
-			User user = base.getUesr(username);
-			ArrayList<String> groups = user.getGroupList();
+			//User user = base.getUesr(username);
+			ArrayList<String> groups = base.getSchedule(groupName).getMember();
+			ArrayList<Date> dateUnion = new ArrayList<>();
+			//スケジュール和集合を生成
+			for(String user:groups) {
+				for(Date date:base.getUesr(user).getSchedule().getDates().keySet()) {
+					if(dateUnion.indexOf(date)==-1) {
+						dateUnion.add(date);
+					}
+				}
+			}
 			
+			HashMap<String,HashMap<String,String> > sendMapArray = new HashMap<>(); 
+			
+			//Schedule dates = base.getUesr(username).getSchedule();
 			builder.append('{');
-			builder.append("\"user\":\"").append(username).append("\",");
-			builder.append("\"output\":\"").append("success").append("\"");
+			//builder.append("\"user\":\"").append(username).append("\",");
+			for(Date date:dateUnion) {
+
+				HashMap<String,String> stuts = new HashMap<>(); 
+				
+				for(String user:groups) {
+					
+					stuts.put("\""+user+"\"","\""+base.getUesr(user).getSchedule().getStuts(date)+"\"");
+				}
+				//builder.append("\"").append(df.format(date)).append("\":\"").append(stuts).append("\",");
+				sendMapArray.put("\""+df.format(date)+"\"",stuts);
+			}
+			
+			builder.append("\"changes\":{");
+			int i = 0;
+			for (String key : sendMapArray.keySet()) {
+				builder.append(key + ":{");
+			    HashMap<String, String> innerMap = sendMapArray.get(key);
+			    int j=0;
+			    for (String innerKey : innerMap.keySet()) {
+			    	builder.append(innerKey + ":" + innerMap.get(innerKey));
+			    	if(j!=innerMap.size()-1)
+			    		 builder.append(",");
+			    	 j++;
+			    }
+			    if(i==sendMapArray.size()-1)
+			    	builder.append("}");
+			    else {
+			    	builder.append("},");
+			    }
+			    i++;
+			}
+			
+			builder.append("},");
+			builder.append("\"order\":\"").append(base.getSchedule(groupName).getType()).append("\",");
+			builder.append("\"output\":\"").append("success").append("\",");
+			builder.append("\"method\":\"").append("gpScheduleGet").append("\"");
 			builder.append('}');
 			
 					
@@ -156,7 +207,7 @@ public class CalendarServlet extends HttpServlet {
 			//初期のメンバーをセット
 			ArrayList<String> users = new ArrayList<>();
 			users.add(user.getName());
-			base.addSchedule(new Schedule(groupName,users));
+			base.addSchedule(new Schedule(groupName,users,"a"));
 			base.setUser(user);
 			Fileloader.write(base);
 			
@@ -180,8 +231,7 @@ public class CalendarServlet extends HttpServlet {
 			builder.append("\"output\":\"").append("memberLoad").append("\"");
 			builder.append('}');
 					
-		}
-		else if(method.equals("addMember")) {
+		}else if(method.equals("addMember")) {
 			String username = request.getParameter("user");
 			String groupName = request.getParameter("groupName");
 			String addedMember = request.getParameter("memberName");
