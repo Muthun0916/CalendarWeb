@@ -1,10 +1,10 @@
 var xmlHttpRequest;
 
-function sendWithGetMethodLogin() {
+function sign_in() {
 	var userElement = document.getElementById("user");
 	var pwElement = document.getElementById("password");
 
-	var url = "doGet?method=login&user=" + userElement.value +"&password=" + pwElement.value+"d";
+	var url = "doGet?method=sign_in&user=" + userElement.value +"&password=" + pwElement.value+"d";
 
 	console.log(userElement.value);
 	console.log(pwElement.value);
@@ -15,7 +15,7 @@ function sendWithGetMethodLogin() {
 
 }
 
-function sendWithGetMethodSignup(){
+function sign_up(){
 	window.location.href =　"register.html";
 }
 
@@ -25,7 +25,7 @@ function receive() {
 		var output = response.output;
 
 		if(output=="success"){
-			window.location.href =　"mypage.html?user="+response.user;
+			window.location.href =　"myPage.html?user="+response.user;
 		}else if(output=="decline"){
 			var cauntionElement = document.getElementById("cauntion");
 			if(cauntionElement.childElementCount==0){
@@ -35,14 +35,12 @@ function receive() {
 				cauntionElement.appendChild(newElement);
 			}
 		}
-
-
 	}
 }
 
 window.addEventListener("load", function() {
-	var signupButtonElement = document.getElementById("signup_button");
-	signupButtonElement.addEventListener("click",sendWithGetMethodSignup,false);
-	var loginButtonElement = document.getElementById("login_button");
-	loginButtonElement.addEventListener("click",sendWithGetMethodLogin,false);
+	var signupButtonElement = document.getElementById("sign_up_button");
+	signupButtonElement.addEventListener("click",sign_up,false);
+	var signinButtonElement = document.getElementById("sign_in_button");
+	signinButtonElement.addEventListener("click",sign_in,false);
 }, false);

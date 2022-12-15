@@ -22,8 +22,8 @@ const greetingMsg = function(){
 var greetingElement = document.getElementById("title");
 greetingElement.innerText=greetingMsg()+" "+params.get("user")+"さん";
 
-var myscheduleElement = document.getElementById("my");
-myscheduleElement.setAttribute('href',"myschedule.html?user="+params.get("user"));
+var myScheduleElement = document.getElementById("my");
+myScheduleElement.setAttribute('href',"mySchedule.html?user="+params.get("user"));
 
-var gpscheduleElement = document.getElementById("gp");
-gpscheduleElement.setAttribute('href',"gpschedule.html?user="+params.get("user"));
+var groupScheduleElement = document.getElementById("gp");
+groupScheduleElement.setAttribute('href',"groupSchedule.html?user="+params.get("user"));

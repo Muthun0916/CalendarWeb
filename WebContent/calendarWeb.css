@@ -11,11 +11,11 @@ body {
    font-size: 20px;
 }
 
-#login_button {
+#sign_in_button {
   margin: 20px;
 }
 
-#signup_button {
+#sign_up_button {
   margin: 20px;
 }
 
@@ -148,6 +148,17 @@ td.today {
   color: Red;
 }
 
+.bar{
+  outline: none;
+  background: transparent;
+  font-size: 50px;
+  width: 45px;
+  font-weight: bold;
+  line-height:0;
+  height: 3vw;
+  color: Gray;
+}
+
 #groups{
   float: left;
   height: 770px;
@@ -203,7 +214,7 @@ td.today {
     color: #fff;
     border: 1px solid #B78D4A;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 2rem;
     padding: 0.5rem 2rem;
     margin: 1rem 0;
 }
@@ -328,7 +339,7 @@ td.today {
 }
 
 #circleLabel{
-  background-color:LightGreen;
+  background-color:green;
   color:white;
   height:30px;
   font-size: 30px;
@@ -346,6 +357,14 @@ td.today {
   color:white;
   height:30px;
   font-size: 30px;
+}
+
+#preview {
+  width: 124px;
+  height: 124px;
+  display: none;
+  position: relative;
+  left: 50%;
 }
 
 

@@ -15,10 +15,10 @@ let params = url.searchParams;
 var greetingElement = document.getElementById("title");
 greetingElement.innerText = params.get("user") + "さんのスケジュール";
 
-function MyscheduleRegister() {
+function registerMySchedule() {
 
   const searchParams = new URLSearchParams(changes);
-  var url = "doGet?method=myscheduleRegister&user=" + params.get("user") + "&" + searchParams.toString();
+  var url = "doGet?method=registerMySchedule&user=" + params.get("user") + "&" + searchParams.toString();
   console.log(url)
   xmlHttpRequest = new XMLHttpRequest();
   xmlHttpRequest.onreadystatechange = receive;
@@ -27,10 +27,8 @@ function MyscheduleRegister() {
 
 }
 
-function MyscheduleGet() {
-
-  var url = "doGet?method=myscheduleGet&user=" + params.get("user");
-
+function getMySchedule() {
+  var url = "doGet?method=getMySchedule&user=" + params.get("user");
   xmlHttpRequest = new XMLHttpRequest();
   xmlHttpRequest.onreadystatechange = receive;
   xmlHttpRequest.open("GET", url, true);
@@ -43,24 +41,24 @@ function receive() {
     var response = JSON.parse(xmlHttpRequest.responseText);
     var output = response.output;
 
-    if (output == "init") {
-      var dates = Object.keys(response);
-      for (var date of dates) {
-        if (getDecode(response[date]) != null) {
-          var year = date.split("/")[0]
-          var month = Number(date.split("/")[1])
-          var day = Number(date.split("/")[2])
-          changes["Date:" + year+"/"+month+"/"+day] = getDecode(response[date]);
+
+    if (output == "success") {
+      if (response.method == "init") {
+        var dates = Object.keys(response);
+        for (var date of dates) {
+          if (getDecode(response[date]) != null) {
+            var year = date.split("/")[0]
+            var month = Number(date.split("/")[1])
+            var day = Number(date.split("/")[2])
+            changes["Date:" + year + "/" + month + "/" + day] = getDecode(response[date]);
+          }
         }
+        console.log("受けとったchange:")
+        console.log(changes)
+        showProcess(today, calendar);
+        var tomypageElement = document.getElementById("tomypage");
+        tomypageElement.setAttribute('href', "myPage.html?user=" + params.get("user"));
       }
-      console.log("受けとったchange:")
-      console.log(changes)
-      showProcess(today, calendar);
-      var tomypageElement = document.getElementById("tomypage");
-      tomypageElement.setAttribute('href',"mypage.html?user="+params.get("user"));
-
-    } else if (output == "success") {
-
     } else if (output == "decline") {
 
     }
@@ -76,12 +74,14 @@ function getDecode(code) {
     return "△";
   } else if (code == "%C3%97") {
     return "×";
+  } else if (code == "-") {
+    return "-";
   } else {
     return null;
   }
 }
 
-function expCalendar(){
+function expCalendar() {
   var calendar = document.getElementById("calendar");
   calendar.style.visibility = "visible";
   var cheader = document.getElementById("header");
@@ -92,8 +92,8 @@ function expCalendar(){
 
 window.addEventListener("load", function() {
   var expButtonElement = document.getElementById("exp_button");
-  expButtonElement.addEventListener("click", MyscheduleRegister, false);
-  MyscheduleGet();
+  expButtonElement.addEventListener("click", registerMySchedule, false);
+  getMySchedule();
   expCalendar();
 }, false);
 
@@ -118,35 +118,23 @@ function next() {
 function theday(year, month, day) {
   console.log(date);
   var dayElement = document.getElementById("day" + day);
-  var date = "Date:" + year + "/" +month + "/" + day;
+  var date = "Date:" + year + "/" + month + "/" + day;
 
   if (dayElement.lastChild.value == "○") {
     dayElement.lastChild.value = "△";
     dayElement.lastChild.className = "triangle";
-    /*
-    dayElement.lastChild.style.fontSize="30px";
-    dayElement.lastChild.style.lineHeight="1.75";
-    dayElement.lastChild.style.color="Orange";*/
 
   } else if (dayElement.lastChild.value == "△") {
     dayElement.lastChild.value = "×";
     dayElement.lastChild.className = "cross";
-    /*
-    dayElement.lastChild.style.fontSize="50px";
-    dayElement.lastChild.style.lineHeight="0";
-    dayElement.lastChild.style.width="45px";
-    dayElement.lastChild.style.color="Red";
-    */
 
   } else if (dayElement.lastChild.value == "×") {
-    dayElement.lastChild.value = "○"
+    dayElement.lastChild.value = "-"
+    dayElement.lastChild.className = "bar";
+
+  } else if (dayElement.lastChild.value == "-") {
+    dayElement.lastChild.value = "○";
     dayElement.lastChild.className = "circle";
-    /*
-    dayElement.lastChild.style.fontSize="50px";
-    dayElement.lastChild.style.lineHeight="0";
-    dayElement.lastChild.style.width="null";
-    dayElement.lastChild.style.color="LightGreen";
-    */
   }
   changes[date] = dayElement.lastChild.value;
   console.log("現在のchange:")
@@ -158,8 +146,10 @@ function getMark(mark) {
     return "triangle";
   } else if (mark == "×") {
     return "cross";
-  } else {
+  } else if (mark == "○") {
     return "circle";
+  } else {
+    return "bar";
   }
 }
 
@@ -210,13 +200,13 @@ function createProcess(year, month) {
           count == today.getDate()) {
           calendar += "<td id = day" + count + " class='today'>" + count +
             "<br><input TYPE='button' onclick='theday(" + year + "," + (month + 1) + "," + count + ")' class=" +
-            (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? getMark(changes["Date:" + year + "/" + (month + 1) + "/" + count]) : "circle") +
-            " VALUE=" + (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? changes["Date:" + year + "/" + (month + 1) + "/" + count] : "○") + "></td>";
+            (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? getMark(changes["Date:" + year + "/" + (month + 1) + "/" + count]) : "bar") +
+            " VALUE=" + (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? changes["Date:" + year + "/" + (month + 1) + "/" + count] : "-") + "></td>";
         } else {
           calendar += "<td id = day" + count + ">" + count +
             "<br><input TYPE='button' onclick='theday(" + year + "," + (month + 1) + "," + count + ")' class=" +
-            (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? getMark(changes["Date:" + year + "/" + (month + 1) + "/" + count]) : "circle") +
-            "  VALUE=" + (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? changes["Date:" + year + "/" + (month + 1) + "/" + count] : "○") + "></td>";
+            (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? getMark(changes["Date:" + year + "/" + (month + 1) + "/" + count]) : "bar") +
+            "  VALUE=" + (changes["Date:" + year + "/" + (month + 1) + "/" + count] ? changes["Date:" + year + "/" + (month + 1) + "/" + count] : "-") + "></td>";
         }
       }
     }

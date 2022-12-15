@@ -8,21 +8,21 @@ public class User implements Serializable{
 	private String imgPath;
 	private String name;
 	private String password;
-	private Schedule schedule;
+	private MySchedule schedule;
 	private ArrayList<String> groupList;
 	
 	public User(String imgPath,String name,String password)  {
 		this.imgPath=imgPath;
 		this.name=name;
 		this.password=password;
-		this.schedule = new Schedule();
+		this.schedule = new MySchedule();
 		this.groupList = new ArrayList<>();
 	}
 	
 	public User(String name,String password)  {
 		this.name=name;
 		this.password=password;
-		this.schedule = new Schedule();
+		this.schedule = new MySchedule();
 		this.groupList = new ArrayList<>();
 	}
 	
@@ -51,11 +51,11 @@ public class User implements Serializable{
 		this.password=password;
 	}
 	
-	public Schedule getSchedule() {
+	public MySchedule getMySchedule() {
 		return schedule;
 	}
 	
-	public void setSchedule(Schedule schedule) {
+	public void setMySchedule(MySchedule schedule) {
 		this.schedule = schedule;
 	}
 	

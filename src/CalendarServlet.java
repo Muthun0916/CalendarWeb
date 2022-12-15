@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import calendarweb.Database;
 import calendarweb.Fileloader;
-import calendarweb.Schedule;
+import calendarweb.GroupSchedule;
+import calendarweb.MySchedule;
 import calendarweb.User;
 
 
@@ -29,7 +30,7 @@ public class CalendarServlet extends HttpServlet {
 		String method = request.getParameter("method");
 
 		StringBuilder builder = new StringBuilder();
-		if(method.equals("login")) {
+		if(method.equals("sign_in")) {
 			//readFile();
 			String username = request.getParameter("user");
 			String password = request.getParameter("password");
@@ -52,7 +53,7 @@ public class CalendarServlet extends HttpServlet {
 			}
 
 
-		}else if(method.equals("newAccount")){
+		}else if(method.equals("sign_up")){
 			String username = request.getParameter("user");
 			String password1 = request.getParameter("password1");
 			String password2 = request.getParameter("password2");
@@ -84,11 +85,11 @@ public class CalendarServlet extends HttpServlet {
 			builder.append("\"user\":\"").append(username).append("\"");
 			builder.append('}');
 
-		}else if(method.equals("myscheduleGet")) {
+		}else if(method.equals("getMySchedule")) {
 			String username = request.getParameter("user");
 			
 			Database base  = Fileloader.read();
-			Schedule dates = base.getUesr(username).getSchedule();
+			MySchedule dates = base.getUesr(username).getMySchedule();
 			
 			builder.append('{');
 			builder.append("\"user\":\"").append(username).append("\",");
@@ -98,20 +99,21 @@ public class CalendarServlet extends HttpServlet {
 				builder.append("\"").append(df.format(date)).append("\":\"").append(dates.getDates().get(date)).append("\",");
 			}
 			
-			builder.append("\"output\":\"").append("init").append("\"");
+			builder.append("\"output\":\"").append("success").append("\",");
+			builder.append("\"method\":\"").append("init").append("\"");
 			builder.append('}');
 
-		}else if(method.equals("myscheduleRegister")) {
+		}else if(method.equals("registerMySchedule")) {
 			String username = request.getParameter("user");
 			//System.out.println(request.getQueryString());
 			//System.out.println(getQueryMap(request.getQueryString()));
 			Map<Date, String> dates = getQueryMap(request.getQueryString());
 			Database base  = Fileloader.read();
-			Schedule change = base.getUesr(username).getSchedule();
+			MySchedule change = base.getUesr(username).getMySchedule();
 			for(Date key: dates.keySet()) {
 				change.register(key, dates.get(key));
 			}
-			base.getUesr(username).setSchedule(change);
+			base.getUesr(username).setMySchedule(change);
 			Fileloader.write(base);
 			
 			builder.append('{');
@@ -120,7 +122,7 @@ public class CalendarServlet extends HttpServlet {
 			builder.append('}');
 
 		//グループに所属しているメンバーを取得
-		}else if(method.equals("gpLoad")) {
+		}else if(method.equals("getGroupList")) {
 			String username = request.getParameter("user");
 			
 			Database base  = Fileloader.read();
@@ -130,11 +132,12 @@ public class CalendarServlet extends HttpServlet {
 			builder.append('{');
 			builder.append("\"user\":\"").append(username).append("\",");
 			builder.append("\"groups\":\"").append(user.getGroupList()).append("\",");
-			builder.append("\"output\":\"").append("gpLoad").append("\"");
+			builder.append("\"output\":\"").append("success").append("\",");
+			builder.append("\"method\":\"").append("getGroupList").append("\"");
 			builder.append('}');
 					
 		//メンバーの予定を取得
-		}else if(method.equals("gpscheduleGet")) {
+		}else if(method.equals("getGroupSchedule")) {
 			String username = request.getParameter("user");
 			String groupName = request.getParameter("groupName");
 			SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
@@ -145,7 +148,7 @@ public class CalendarServlet extends HttpServlet {
 			ArrayList<Date> dateUnion = new ArrayList<>();
 			//スケジュール和集合を生成
 			for(String user:groups) {
-				for(Date date:base.getUesr(user).getSchedule().getDates().keySet()) {
+				for(Date date:base.getUesr(user).getMySchedule().getDates().keySet()) {
 					if(dateUnion.indexOf(date)==-1) {
 						dateUnion.add(date);
 					}
@@ -163,7 +166,7 @@ public class CalendarServlet extends HttpServlet {
 				
 				for(String user:groups) {
 					
-					stuts.put("\""+user+"\"","\""+base.getUesr(user).getSchedule().getStuts(date)+"\"");
+					stuts.put("\""+user+"\"","\""+base.getUesr(user).getMySchedule().getStuts(date)+"\"");
 				}
 				//builder.append("\"").append(df.format(date)).append("\":\"").append(stuts).append("\",");
 				sendMapArray.put("\""+df.format(date)+"\"",stuts);
@@ -192,7 +195,7 @@ public class CalendarServlet extends HttpServlet {
 			builder.append("},");
 			builder.append("\"order\":\"").append(base.getSchedule(groupName).getType()).append("\",");
 			builder.append("\"output\":\"").append("success").append("\",");
-			builder.append("\"method\":\"").append("gpScheduleGet").append("\"");
+			builder.append("\"method\":\"").append("getGroupSchedule").append("\"");
 			builder.append('}');
 			
 					
@@ -207,7 +210,7 @@ public class CalendarServlet extends HttpServlet {
 			//初期のメンバーをセット
 			ArrayList<String> users = new ArrayList<>();
 			users.add(user.getName());
-			base.addSchedule(new Schedule(groupName,users,"a"));
+			base.addSchedule(new GroupSchedule(groupName,users,"a"));
 			base.setUser(user);
 			Fileloader.write(base);
 			
@@ -217,18 +220,19 @@ public class CalendarServlet extends HttpServlet {
 			builder.append('}');
 			
 			
-		}else if(method.equals("loadMember")) {
+		}else if(method.equals("getMember")) {
 			String username = request.getParameter("user");
 			String groupName = request.getParameter("groupName");
 			Database base  = Fileloader.read();
 			System.out.println(groupName);
-			System.out.println(base.getScheduleList());
+			System.out.println(base.getGroupScheduleList());
 			
 			builder.append('{');
 			builder.append("\"user\":\"").append(username).append("\",");
 			builder.append("\"groupName\":\"").append(groupName).append("\",");
 			builder.append("\"member\":\"").append(base.getSchedule(groupName).getMember()).append("\",");
-			builder.append("\"output\":\"").append("memberLoad").append("\"");
+			builder.append("\"output\":\"").append("success").append("\",");
+			builder.append("\"method\":\"").append("getMember").append("\"");
 			builder.append('}');
 					
 		}else if(method.equals("addMember")) {
@@ -236,7 +240,7 @@ public class CalendarServlet extends HttpServlet {
 			String groupName = request.getParameter("groupName");
 			String addedMember = request.getParameter("memberName");
 			Database base  = Fileloader.read();
-			Schedule schedule = base.getSchedule(groupName);
+			GroupSchedule schedule = base.getSchedule(groupName);
 			//存在するメンバーであるかつまだ追加されていないメンバー
 			System.out.println(base.isExistUser(addedMember));
 			System.out.println(schedule.isMember(addedMember));
@@ -250,7 +254,7 @@ public class CalendarServlet extends HttpServlet {
 				schedule.addMember(addedMember);
 				User addedUser = base.getUesr(addedMember);
 				addedUser.addGroup(groupName);
-				base.setSchedule(schedule);
+				base.setGroupSchedule(schedule);
 				base.setUser(addedUser);
 				Fileloader.write(base);
 				

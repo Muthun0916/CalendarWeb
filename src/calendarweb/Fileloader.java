@@ -62,7 +62,7 @@ public class Fileloader {
 	
 	public static void showPw() {
 		Database base = read();
-		for(Schedule schedule :base.getScheduleList()) {
+		for(GroupSchedule schedule :base.getGroupScheduleList()) {
 			System.out.println(schedule.getName());
 		}
 	}
@@ -72,18 +72,18 @@ public class Fileloader {
 		ArrayList<String> users = new ArrayList<>();
 		User user = new User("aaa","aaa");
 		users.add("aaa");
-		base.addSchedule(new Schedule("unti",users,"a"));
-		System.out.println(base.getScheduleList());
+		base.addSchedule(new GroupSchedule("unti",users,"a"));
+		System.out.println(base.getGroupScheduleList());
 		System.out.println(base.getUserList());
 		base.setUser(user);
-		System.out.println(base.getScheduleList());
+		System.out.println(base.getGroupScheduleList());
 		System.out.println(base.getUserList());
 		write(base);
 		base = read();
-		System.out.println(base.getScheduleList());
+		System.out.println(base.getGroupScheduleList());
 		System.out.println(base.getUserList());
 		base.removeUser("aaa");
-		System.out.println(base.getScheduleList());
+		System.out.println(base.getGroupScheduleList());
 		System.out.println(base.getUserList());
 		
 	}
@@ -93,7 +93,7 @@ public class Fileloader {
 		ArrayList<String> users = new ArrayList<>();
 		User user = new User("aaa","aaa");
 		users.add("aaa");
-		base.addSchedule(new Schedule("unti",users,"a"));
+		base.addSchedule(new GroupSchedule("unti",users,"a"));
 		base.getSchedule("unti").showInfo();
 		base.setUser(user);
 		write(base);

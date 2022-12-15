@@ -1,4 +1,4 @@
-var frends_list = document.getElementById("groups")
+var groupList = document.getElementById("groups")
 
 const addcModal = document.getElementById('addModal');
 const addfModal = document.getElementById('addMemberModal');
@@ -17,31 +17,38 @@ var changes = {};
 
 const modal = document.getElementById('easyModal');
 
+// URLを取得
+const url = new URL(window.location.href);
+
+// URLSearchParamsオブジェクトを取得
+const params = url.searchParams;
+
+/*
+*グループリストのグループ追加ボタンを作成
+*/
 var addButton = document.createElement("button");
 addButton.className = "group_button";
-var nameAddContent = "<span class='group_name'>   グループを追加   </span>";
+var nameAddContent = "<span class='group_name'>   グループを作成   </span>";
 var imgAddContent = "<img src='math_mark01_plus.png' width='70' height='70'>";
 addButton.insertAdjacentHTML("afterbegin", imgAddContent);
 addButton.insertAdjacentHTML("afterbegin", nameAddContent);
 addButton.insertAdjacentHTML("afterbegin", imgAddContent);
-frends_list.appendChild(addButton);
-frends_list.appendChild(document.createElement("br"));
+groupList.appendChild(addButton);
+groupList.appendChild(document.createElement("br"));
 
 
-// URLを取得
-let url = new URL(window.location.href);
-
-// URLSearchParamsオブジェクトを取得
-let params = url.searchParams;
-
+//グループ作成モーダルの表示
 function createGroupModal() {
   addcModal.style.display = 'block';
 }
 
+//グループ作成モーダルの非表示
 function close() {
   addcModal.style.display = 'none';
 }
 
+
+//カレンダーを非表示
 function hideElements() {
   var wrapper = document.getElementsByClassName("wrapper");
   for (var element of wrapper) {
@@ -51,6 +58,7 @@ function hideElements() {
   member.style.visibility = "hidden";
 }
 
+//カレンダーを表示
 function showElements(e) {
   var wrapper = document.getElementsByClassName("wrapper");
   for (var element of wrapper) {
@@ -61,12 +69,12 @@ function showElements(e) {
   var dateMsg = document.getElementById("header");
   var dateElements = dateMsg.innerText.split(" ");
   dateMsg.innerText = dateElements[0] + " " + dateElements[1] + " " + this.gpname;
-  loadMember(this.gpname);
+  getMember(this.gpname);
 }
 
 //そのユーザーのグループ配列を取得
-function loadGroup() {
-  var url = "doGet?method=gpLoad&user=" + params.get("user");
+function getGroupList() {
+  var url = "doGet?method=getGroupList&user=" + params.get("user");
 
   xmlHttpRequest = new XMLHttpRequest();
   xmlHttpRequest.onreadystatechange = receive;
@@ -76,44 +84,36 @@ function loadGroup() {
 }
 
 //グループのメンバーを取得
-function loadMember(name) {
+function getMember(name) {
   groupName = name
   console.log("グループ名:" + name)
-  var url = "doGet?method=loadMember&user=" + params.get("user") + "&groupName=" + name;
+  var url = "doGet?method=getMember&user=" + params.get("user") + "&groupName=" + name;
 
   xmlHttpRequest = new XMLHttpRequest();
   xmlHttpRequest.onreadystatechange = receive;
   xmlHttpRequest.open("GET", url, true);
   xmlHttpRequest.send(null);
-  //loadSchedule();
 }
 
-function loadSchedule() {
+//グループのそれぞれのメンバーのスケジュールを取得
+function getGroupSchedule() {
   //ヘッダーからグループ名を取得
   var dateMsg = document.getElementById("header");
   var dateElements = dateMsg.innerText.split(" ");
-  var url = "doGet?method=gpscheduleGet&user=" + params.get("user") + "&groupName=" + dateElements[2];
+  var url = "doGet?method=getGroupSchedule&user=" + params.get("user") + "&groupName=" + dateElements[2];
 
   xmlHttpRequest = new XMLHttpRequest();
   xmlHttpRequest.onreadystatechange = receive;
   xmlHttpRequest.open("GET", url, true);
   xmlHttpRequest.send(null);
-
-  /*
-  //e.date:そのひとのスケジュール設定した日にち配列
-  for (var date of Object.keys(e.dates)) {
-    if (!memberSchedule[date]) {
-      memberSchedule[date] = [];
-    }
-    memberSchedule[date].push(e.dates[date]);
-  }
-  */
 }
 
+//メンバー追加のモーダルを表示
 function addMemberModal() {
   addfModal.style.display = 'block';
 }
 
+//グループにメンバーを追加する
 function addMember() {
   var nameInput = document.getElementById("friendName");
   //ヘッダーからグループ名を取得
@@ -128,6 +128,7 @@ function addMember() {
   xmlHttpRequest.send(null);
 }
 
+//メンバーのラベルをメンバー一覧に追加
 function addMemberLabel(name) {
   var memberElement = document.getElementById("member");
   var newMember = document.createElement("div");
@@ -147,7 +148,7 @@ for (var i = 0; i < 10; i++) {
   memberElement.appendChild(newMember);
 }
 */
-
+//グループ作成
 function createGroup() {
   var nameInput = document.getElementById("groupName");
   var gpname = nameInput.value.replace(" ", "　")
@@ -162,6 +163,7 @@ function createGroup() {
   xmlHttpRequest.send(null);
 }
 
+//作成したグループのボタンをグループリストに追加
 function addGroupButton(name) {
   var gpButton = document.createElement("button");
   gpButton.className = "group_button";
@@ -173,8 +175,8 @@ function addGroupButton(name) {
   }, false);
   gpButton.insertAdjacentHTML("afterbegin", nameContent);
   //gpButton.insertAdjacentHTML("afterbegin",imgContent);
-  frends_list.appendChild(gpButton);
-  frends_list.appendChild(document.createElement("br"));
+  groupList.appendChild(gpButton);
+  groupList.appendChild(document.createElement("br"));
 
 }
 /*
@@ -185,8 +187,8 @@ for(var i=0;i<100;i++){
   var imgContent = "<img src='favicon.png' width='70' height='70'>";
   gpButton.insertAdjacentHTML("afterbegin",nameContent);
   gpButton.insertAdjacentHTML("afterbegin",imgContent);
-  frends_list.appendChild(gpButton);
-  frends_list.appendChild(document.createElement("br"));
+  groupList.appendChild(gpButton);
+  groupList.appendChild(document.createElement("br"));
 }
 */
 
@@ -195,21 +197,45 @@ function reviver(key, value) {
   return typeof value === "object" ? new Map(Object.entries(value)) : value;
 }
 
+
 function receive() {
   if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
     var response = JSON.parse(xmlHttpRequest.responseText);
     var output = response.output;
     console.log(output)
+
+
     if (output == "success") {
       if (response.method == "addMember") {
         var nameInput = document.getElementById("friendName");
         addMemberLabel(nameInput.value);
         addfModal.style.display = 'none';
         nameInput.value = "";
-        loadSchedule();
-      } else if (response.method == "gpScheduleGet") {
+        getGroupSchedule();
+      } else if (response.method == "getGroupSchedule") {
         markSet(response.changes);
 
+      }else if (response.method == "getGroupList") {
+        //文字列から配列へ変換
+        var groups = response.groups.substring(1, response.groups.length - 1).split(",");
+        if (groups != "")
+          for (var group of groups)
+            addGroupButton(group.trim());
+
+      }else if (response.method == "getMember") {
+        var memberElement = document.getElementById("member");
+        while (memberElement.firstChild) {
+          memberElement.removeChild(memberElement.firstChild);
+        }
+        console.log("メンバー配列:" + response.member)
+        var member = response.member.substring(1, response.member.length - 1).split(",");
+        if (member != "") {
+          for (var user of member) {
+            console.log("メンバー追加");
+            addMemberLabel(user);
+          }
+        }
+        getGroupSchedule();
       }
 
     } else if (output == "decline") {
@@ -225,27 +251,6 @@ function receive() {
         }
       }
 
-    } else if (output == "gpLoad") {
-      //文字列から配列へ変換
-      var groups = response.groups.substring(1, response.groups.length - 1).split(",");
-      if (groups != "")
-        for (var group of groups)
-          addGroupButton(group.trim());
-
-    } else if (output == "memberLoad") {
-      var memberElement = document.getElementById("member");
-      while (memberElement.firstChild) {
-        memberElement.removeChild(memberElement.firstChild);
-      }
-      console.log("メンバー配列:" + response.member)
-      var member = response.member.substring(1, response.member.length - 1).split(",");
-      if (member != "") {
-        for (var user of member) {
-          console.log("メンバー追加");
-          addMemberLabel(user);
-        }
-      }
-      loadSchedule();
     }
   }
 }
@@ -328,8 +333,10 @@ function getMark(mark) {
     return "triangle";
   } else if (mark == "×") {
     return "cross";
-  } else {
+  } else if (mark == "○") {
     return "circle";
+  } else {
+    return "bar";
   }
 }
 
@@ -340,16 +347,22 @@ function getDecode(code) {
     return "△";
   } else if (code == "%C3%97") {
     return "×";
+  } else if (code=="-"){
+    return "-";
   } else {
     return null;
   }
 }
-
 function markSet(schedule) {
   scheduleMap = schedule;
   changes={}
   //schedule={"2022/12/10":{a:****,b:****},....}
   for (var oneDay of Object.keys(schedule)) {
+    var year = oneDay.split("/")[0]
+    var month = Number(oneDay.split("/")[1])
+    var day = Number(oneDay.split("/")[2])
+    var convertedDay =year + "/" + month + "/" + day;
+
     var counts = new Map();
     //oneDay = {a:****,b:****}
     for (var mark of Object.values(schedule[oneDay])) {
@@ -371,14 +384,14 @@ function markSet(schedule) {
       }
     }
     if (sameCounts.includes("%C3%97")) {
-      console.log(oneDay+":"+getDecode("%C3%97"));
-      changes[oneDay] = getDecode("%C3%97");
+      console.log(convertedDay+":"+getDecode("%C3%97"));
+      changes[convertedDay] = getDecode("%C3%97");
     } else if (sameCounts.includes("%E2%96%B3")) {
-      console.log(oneDay+":"+getDecode("%E2%96%B3"));
-      changes[oneDay] = getDecode("%E2%96%B3");
+      console.log(convertedDay+":"+getDecode("%E2%96%B3"));
+      changes[convertedDay] = getDecode("%E2%96%B3");
     } else if (sameCounts.includes("%E2%97%8B")) {
-      console.log(oneDay+":"+getDecode("%E2%97%8B"));
-      changes[oneDay] = getDecode("%E2%97%8B");
+      console.log(convertedDay+":"+getDecode("%E2%97%8B"));
+      changes[convertedDay] = getDecode("%E2%97%8B");
     }else{
       console.log("else : "+sameCounts);
     }
@@ -436,13 +449,13 @@ function createProcess(year, month) {
           count == today.getDate()) {
           calendar += "<td id = day" + count + " class='today'>" + count +
             "<br><input TYPE='button' onclick='theday(" + year + "," + (month + 1) + "," + count + ")' class=" +
-            (changes[year + "/" + (month + 1) + "/" + count] ? getMark(changes[year + "/" + (month + 1) + "/" + count]) : "circle") +
-            " VALUE=" + (changes[+year + "/" + (month + 1) + "/" + count] ? changes[year + "/" + (month + 1) + "/" + count] : "○") + "></td>";
+            (changes[year + "/" + (month + 1) + "/" + count] ? getMark(changes[year + "/" + (month + 1) + "/" + count]) : "bar") +
+            " VALUE=" + (changes[+year + "/" + (month + 1) + "/" + count] ? changes[year + "/" + (month + 1) + "/" + count] : "-") + "></td>";
         } else {
           calendar += "<td id = day" + count + ">" + count +
             "<br><input TYPE='button' onclick='theday(" + year + "," + (month + 1) + "," + count + ")' class=" +
-            (changes[year + "/" + (month + 1) + "/" + count] ? getMark(changes[year + "/" + (month + 1) + "/" + count]) : "circle") +
-            "  VALUE=" + (changes[year + "/" + (month + 1) + "/" + count] ? changes[year + "/" + (month + 1) + "/" + count] : "○") + "></td>";
+            (changes[year + "/" + (month + 1) + "/" + count] ? getMark(changes[year + "/" + (month + 1) + "/" + count]) : "bar") +
+            "  VALUE=" + (changes[year + "/" + (month + 1) + "/" + count] ? changes[year + "/" + (month + 1) + "/" + count] : "-") + "></td>";
         }
       }
     }
@@ -466,10 +479,12 @@ window.addEventListener("load", function() {
   addMemberButtonElement.addEventListener("click", addMemberModal, false);
   var addMemberButtonElement = document.getElementById("addFriendButton");
   addMemberButtonElement.addEventListener("click", addMember, false);
-  var myscheduleElement = document.getElementById("mypage");
-  myscheduleElement.setAttribute('href', "mypage.html?user=" + params.get("user"));
+  var myScheduleElement = document.getElementById("mypage");
+  myScheduleElement.setAttribute('href', "myPage.html?user=" + params.get("user"));
+  //カレンダーを初めは透明とする
   hideElements();
-  loadGroup();
+  //ユーザーのグループリストを取得
+  getGroupList();
 }, false);
 
 window.addEventListener('click', outsideClose);
