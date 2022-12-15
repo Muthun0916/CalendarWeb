@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>CalendarBookService</title>
+  <link rel="stylesheet" type="text/css" href="calendarWeb.css"/>
+
+</head>
+<div class="top">
+  <a href="topPage.html">サインアウト</a>
+  <a id="tomypage" href="myPage.html">マイページ</a>
+
+</div>
+<br>
+<body>
+  <span id="title"></span><br>
+  <div class="text-ani_sample">
+      <p>現在新着の予約はありません。</p>
+  </div>
+  <div>
+    <div id="explain">予定を入力してください。</div>
+    <div class="wrapper">
+  <!-- xxxx年xx月を表示 -->
+  <h1 id="header"></h1>
+
+  <!-- ボタンクリックで月移動 -->
+  <div id="next-prev-button">
+        <button id="prev" onclick="prev()">‹</button>
+      <button id="next" onclick="next()">›</button>
+  </div>
+
+  <!-- カレンダー -->
+  <div id="calendar">
+  </div>
+  <button class="execute_button" id="exp_button">変更を保存する</button>
+</div>
+
+  </div>
+
+</body>
+  <script type="text/javascript" src="mySchedule.js"></script>
+
+</html>
