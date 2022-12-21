@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>CalendarBookService</title>
+  <link rel="stylesheet" type="text/css" href="calendarWeb.css" />
+
+</head>
+<div class="top">
+  <a href="topPage.html">サインアウト</a>
+  <a id="tomypage" href="myPage.html">マイページ</a>
+</div>
+<br>
+
+<body>
+  <span id="title">アカウント情報を変更</span><br>
+  <div class="form">
+    <img id="preview">
+    <br>
+    アイコン参照　　　:　　　<label><input type="file" id="icon" accept="image/*"></label><br>
+    新しいユーザー名　: <input class="blank" id="user" size=30><br>
+    現在のパスワード　: <input type="password" class="blank" id="password" size=30><br>
+    新しいパスワード1 : <input type="password" class="blank" id="password1" size=30><br>
+    新しいパスワード2 : <input type="password" class="blank" id="password2" size=30><br>
+    <span style="color:red">※変更しない箇所は、空欄で"確定"を押してください。</span>
+    <div id="cauntion"></div>
+    <button class="execute_button" id="exp_button">パスワードを表示する</button>
+    <button class="execute_button" id="change_button">確定</button>
+  </div>
+
+
+</body>
+<script type="text/javascript" src="management.js"></script>
+
+
+</html>

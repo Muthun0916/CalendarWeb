@@ -5,9 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 public class Fileloader {
+	
+	private final static String path = "WebContent/unKnown.png";
 	
 	public static void write(Database base) {
 		
@@ -35,7 +36,11 @@ public class Fileloader {
 	public static void main(String[] args) {
 		init();
 		starting();
-		//test2();
+		showUsers();
+		System.out.println("=================");
+		//showPw();
+		//test1();
+		//showUsers();
 	}
 	
 	public static void init() {
@@ -54,10 +59,40 @@ public class Fileloader {
 	
 	public static void starting() {
 		Database base = read();
-		base.addUser(new User("a","ad"));
-		base.addUser(new User("b","bd"));
-		base.addUser(new User("c","cd"));
+		base.addUser(new User(path,"a","ad"));
+		base.addUser(new User(path,"b","bd"));
+		base.addUser(new User(path,"c","cd"));
 		write(base);
+	}
+	
+	public static void resetGroup() {
+		Database base = read();
+		for(User user : base.getUserList()) {
+			for(GroupSchedule sche: base.getGroupScheduleList()) {
+				if(sche.isMember(user.getName()))
+					user.removeGroup(sche.getName());
+			}
+		}
+		Fileloader.write(base);
+	}
+	
+	public static void showUsers() {
+		Database base = read();
+		for(User user : base.getUserList()) {
+			System.out.println("name :"+user.getName());
+			System.out.println("password :"+user.getPassword());
+			System.out.println("image :"+user.getImgPath());
+			System.out.println("loing :"+user.getLoginDate());
+			System.out.println("update :"+user.getUpdateDate());
+		}
+	}
+	
+	public static void showGroup() {
+		Database base = read();
+		for(GroupSchedule group : base.getGroupScheduleList()) {
+			System.out.println("name :"+group.getName());
+			System.out.println("type :"+group.getType());
+		}
 	}
 	
 	public static void showPw() {
@@ -66,41 +101,17 @@ public class Fileloader {
 			System.out.println(schedule.getName());
 		}
 	}
+
 	
 	public static void test1() {
-		Database base = new Database();
-		ArrayList<String> users = new ArrayList<>();
-		User user = new User("aaa","aaa");
-		users.add("aaa");
-		base.addSchedule(new GroupSchedule("unti",users,"a"));
-		System.out.println(base.getGroupScheduleList());
-		System.out.println(base.getUserList());
-		base.setUser(user);
-		System.out.println(base.getGroupScheduleList());
-		System.out.println(base.getUserList());
+		Database base = read();
+		base.removeUser("b");	
+		base.addUser(new User("WebContent/unKnown.png","d","dd"));
 		write(base);
-		base = read();
-		System.out.println(base.getGroupScheduleList());
-		System.out.println(base.getUserList());
-		base.removeUser("aaa");
-		System.out.println(base.getGroupScheduleList());
-		System.out.println(base.getUserList());
-		
 	}
 	
 	public static void test2() {
-		Database base = new Database();
-		ArrayList<String> users = new ArrayList<>();
-		User user = new User("aaa","aaa");
-		users.add("aaa");
-		base.addSchedule(new GroupSchedule("unti",users,"a"));
-		base.getSchedule("unti").showInfo();
-		base.setUser(user);
-		write(base);
-		base = read();
-		base.getSchedule("unti").showInfo();
 
-		
 	}
 
 }

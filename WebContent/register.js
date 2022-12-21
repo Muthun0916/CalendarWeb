@@ -1,16 +1,27 @@
 var xmlHttpRequest;
 
-function sendWithGetMethod() {
+function sign_up() {
+  var iconElement = document.getElementById("icon");
   var userElement = document.getElementById("user");
   var pw1Element = document.getElementById("password1");
   var pw2Element = document.getElementById("password2");
 
-  var url = "doGet?method=sign_up&user=" + userElement.value + "&password1=" + pw1Element.value + "d" + "&password2=" + pw2Element.value + "d";
+  var formData = new FormData();
+  const imageFile = iconElement.files[0];
+  formData.append("imageFile", imageFile)
+  formData.append("user",userElement.value)
+  formData.append("password1",pw1Element.value+"d")
+  formData.append("password2",pw2Element.value+"d")
+  var url = "doGet?&user=" + userElement.value + "&password1=" + pw1Element.value + "d" + "&password2=" + pw2Element.value + "d";
 
+  formData.forEach((value, key) => {
+  console.log(key + ': ' + value);
+});
   xmlHttpRequest = new XMLHttpRequest();
   xmlHttpRequest.onreadystatechange = receive;
-  xmlHttpRequest.open("GET", url, true);
-  xmlHttpRequest.send(null);
+  xmlHttpRequest.open("POST", "doGet?method=sign_up", true);
+  //xmlHttpRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xmlHttpRequest.send(formData);
 
 }
 
@@ -34,7 +45,7 @@ function receive() {
     var outputElement = document.getElementById("output");
     var output = response.output;
     if (output == "success") {
-      window.location.href = "index.html";
+      window.location.href = "topPage.html";
 
     } else if (output == "decline") {
 
@@ -49,7 +60,7 @@ function receive() {
     }
   }
 }
-var imageInput = document.getElementById('myImage');
+var imageInput = document.getElementById('icon');
 
 // add an event listener for the 'change' event
 imageInput.addEventListener('change', function(e) {
@@ -94,5 +105,5 @@ window.addEventListener("load", function() {
   expButtonElement.addEventListener("click", showPassword, false);
 
   var signupButtonElement = document.getElementById("sign_up_button");
-  signupButtonElement.addEventListener("click", sendWithGetMethod, false);
+  signupButtonElement.addEventListener("click", sign_up, false);
 }, false);

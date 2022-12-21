@@ -9,6 +9,7 @@ var groupName = "";
 
 const week = ["日", "月", "火", "水", "木", "金", "土"];
 const today = new Date();
+const  zeroPadding = (val,length) =>  ( "0000000" + val).slice(-length);
 // 月末だとずれる可能性があるため、1日固定で取得
 var showDate = new Date(today.getFullYear(), today.getMonth(), 1);
 var days = 0;
@@ -24,8 +25,8 @@ const url = new URL(window.location.href);
 const params = url.searchParams;
 
 /*
-*グループリストのグループ追加ボタンを作成
-*/
+ *グループリストのグループ追加ボタンを作成
+ */
 var addButton = document.createElement("button");
 addButton.className = "group_button";
 var nameAddContent = "<span class='group_name'>   グループを作成   </span>";
@@ -115,7 +116,7 @@ function addMemberModal() {
 
 //グループにメンバーを追加する
 function addMember() {
-  var nameInput = document.getElementById("friendName");
+  var nameInput = document.getElementById("newMemberName");
   //ヘッダーからグループ名を取得
   var dateMsg = document.getElementById("header");
   var dateElements = dateMsg.innerText.split(" ");
@@ -129,12 +130,12 @@ function addMember() {
 }
 
 //メンバーのラベルをメンバー一覧に追加
-function addMemberLabel(name) {
+function addMemberLabel(name, imageCode) {
   var memberElement = document.getElementById("member");
   var newMember = document.createElement("div");
   newMember.setAttribute("id", "member_content");
-  newMember.insertAdjacentHTML("afterbegin", "<span id='member_name'>" + name + "</span>");
-  newMember.insertAdjacentHTML("afterbegin", "<img src='favicon.png' width='50' height='50'>");
+  newMember.insertAdjacentHTML("afterbegin", "<span id='member_name'>　" + name + "</span>");
+  newMember.insertAdjacentHTML("afterbegin", "<img src=data:image/png;base64," + imageCode + " width='50' height='50'>");
   memberElement.appendChild(newMember);
 }
 /*
@@ -151,9 +152,20 @@ for (var i = 0; i < 10; i++) {
 //グループ作成
 function createGroup() {
   var nameInput = document.getElementById("groupName");
+  var large = document.getElementById("large_p");
+  var all = document.getElementById("all_p");
+  var small = document.getElementById("small_p");
+  var type;
+  if (large.checked) {
+    type = "l";
+  } else if (all.checked) {
+    type = "a";
+  } else if (small.checked) {
+    type = "s";
+  }
   var gpname = nameInput.value.replace(" ", "　")
   addGroupButton(gpname);
-  var url = "doGet?method=createGroup&user=" + params.get("user") + "&groupName=" + gpname;
+  var url = "doGet?method=createGroup&user=" + params.get("user") + "&groupName=" + gpname + "&type=" + type;
   addcModal.style.display = 'none';
   nameInput.value = "";
 
@@ -207,40 +219,51 @@ function receive() {
 
     if (output == "success") {
       if (response.method == "addMember") {
-        var nameInput = document.getElementById("friendName");
-        addMemberLabel(nameInput.value);
+        var nameInput = document.getElementById("newMemberName");
+        var image = response.image;
+        addMemberLabel(nameInput.value, image);
         addfModal.style.display = 'none';
         nameInput.value = "";
         getGroupSchedule();
       } else if (response.method == "getGroupSchedule") {
-        markSet(response.changes);
+        markSet(response.changes, response.type);
 
-      }else if (response.method == "getGroupList") {
+      } else if (response.method == "getGroupList") {
         //文字列から配列へ変換
         var groups = response.groups.substring(1, response.groups.length - 1).split(",");
         if (groups != "")
           for (var group of groups)
             addGroupButton(group.trim());
 
-      }else if (response.method == "getMember") {
+      } else if (response.method == "getMember") {
         var memberElement = document.getElementById("member");
+
         while (memberElement.firstChild) {
           memberElement.removeChild(memberElement.firstChild);
         }
         console.log("メンバー配列:" + response.member)
-        var member = response.member.substring(1, response.member.length - 1).split(",");
-        if (member != "") {
-          for (var user of member) {
-            console.log("メンバー追加");
-            addMemberLabel(user);
+        var member = Object.keys(response.member);
+
+        for (var key of member) {
+          if (key != "") {
+            addMemberLabel(key, response.member[key]);
+
           }
         }
+        //var member = response.member.substring(1, response.member.length - 1).split(",");
+        // if (member != "") {
+        //   for (var user of member) {
+        //     console.log("メンバー追加");
+        //     addMemberLabel(user);
+        //   }
+        // }
         getGroupSchedule();
+
       }
 
     } else if (output == "decline") {
       if (response.method == "addMember") {
-        var nameInput = document.getElementById("friendName");
+        var nameInput = document.getElementById("newMemberName");
         //空欄確認、メンバー存在確認、メンバー既存追加確認
         var cauntionElement = document.getElementById("cauntion");
         if (cauntionElement.childElementCount == 0) {
@@ -281,11 +304,13 @@ function next() {
 
 function theday(year, month, day) {
   console.log(year + "/" + month + "/" + day)
+  console.log(scheduleMap)
+  console.log(scheduleMap[year + "/" + Number(month) + "/" + Number(day)]);
   var dateMsg = document.getElementById("date");
-  dateMsg.innerText = year + "年" + month + "月" + day + "日の予定";
+  dateMsg.innerText = year + "年" + zeroPadding(month , 2) + "月" + zeroPadding(day , 2) + "日の予定";
   modal.style.display = 'block';
-  if (scheduleMap[year + "/" + month + "/" + day]) {
-    var stuts = scheduleMap[year + "/" + month + "/" + day]
+  if (scheduleMap[year + "/" + zeroPadding(month , 2) + "/" + zeroPadding(day , 2)]) {
+    var stuts = scheduleMap[year + "/" + zeroPadding(month , 2) + "/" + zeroPadding(day , 2)]
     const merged = Object.entries(stuts).reduce((acc, [key, value]) => {
       if (!acc[value] && value != "null") {
         acc[value] = [key];
@@ -347,26 +372,37 @@ function getDecode(code) {
     return "△";
   } else if (code == "%C3%97") {
     return "×";
-  } else if (code=="-"){
+  } else if (code == "-") {
     return "-";
   } else {
     return null;
   }
 }
-function markSet(schedule) {
+
+function markSet(schedule, type) {
+  //type
+  //l:多数優先(マークの1番多いものを表示します)
+  //a:全員優先(一人でも×がいれば×を表示します)
+  //s:一人以上優先(一人でも○がいれば○を表示します)
   scheduleMap = schedule;
-  changes={}
+  changes = {}
   //schedule={"2022/12/10":{a:****,b:****},....}
+
   for (var oneDay of Object.keys(schedule)) {
     var year = oneDay.split("/")[0]
-    var month = Number(oneDay.split("/")[1])
-    var day = Number(oneDay.split("/")[2])
-    var convertedDay =year + "/" + month + "/" + day;
+    var month = oneDay.split("/")[1]
+    var day = oneDay.split("/")[2]
+    var convertedDay = year + "/" + Number(month) + "/" + Number(day);
 
     var counts = new Map();
     //oneDay = {a:****,b:****}
     for (var mark of Object.values(schedule[oneDay])) {
       console.log(oneDay + ":" + mark)
+      if ((type == "a" && mark == "%C3%97")||(type == "s" && mark == "%E2%97%8B")) {
+        counts.set(mark, Infinity);
+        break;
+      }
+
       if (counts[mark]) {
         counts.set(mark, counts[mark] + 1);
       } else if (mark != "null") {
@@ -377,27 +413,27 @@ function markSet(schedule) {
     //counts = {*****:1,*****:3} key = code ,value = counts of key
     const maxKey = [...counts.entries()].reduce((a, b) => (b[1] > a[1] ? b : a))[0];
     var sameCounts = [];
-
+    console.log("maxKey is "+maxKey);
     for (var mark of counts.keys()) {
-      if (counts[mark] == counts[maxKey]) {
+      if (counts.get(mark) == counts.get(maxKey)) {
+        console.log("counts[mark]="+counts.get(mark)+" == counts[maxKey]="+counts.get(maxKey));
         sameCounts.push(mark);
       }
     }
+    console.log(sameCounts);
     if (sameCounts.includes("%C3%97")) {
-      console.log(convertedDay+":"+getDecode("%C3%97"));
+      console.log(convertedDay + ":" + getDecode("%C3%97"));
       changes[convertedDay] = getDecode("%C3%97");
     } else if (sameCounts.includes("%E2%96%B3")) {
-      console.log(convertedDay+":"+getDecode("%E2%96%B3"));
+      console.log(convertedDay + ":" + getDecode("%E2%96%B3"));
       changes[convertedDay] = getDecode("%E2%96%B3");
     } else if (sameCounts.includes("%E2%97%8B")) {
-      console.log(convertedDay+":"+getDecode("%E2%97%8B"));
+      console.log(convertedDay + ":" + getDecode("%E2%97%8B"));
       changes[convertedDay] = getDecode("%E2%97%8B");
-    }else{
-      console.log("else : "+sameCounts);
+    } else {
+      console.log("else : " + sameCounts);
     }
   }
-
-
 
   console.log(changes);
   showProcess(today, calendar);
@@ -475,9 +511,9 @@ window.addEventListener("load", function() {
   //名前入力時に押してグループを作成するボタン
   var creategpButtonElement = document.getElementById("createGroupButton");
   creategpButtonElement.addEventListener("click", createGroup, false);
-  var addMemberButtonElement = document.getElementById("addFriend");
-  addMemberButtonElement.addEventListener("click", addMemberModal, false);
-  var addMemberButtonElement = document.getElementById("addFriendButton");
+  var showAddMemberButtonElement = document.getElementById("addMember");
+  showAddMemberButtonElement.addEventListener("click", addMemberModal, false);
+  var addMemberButtonElement = document.getElementById("addMemberButton");
   addMemberButtonElement.addEventListener("click", addMember, false);
   var myScheduleElement = document.getElementById("mypage");
   myScheduleElement.setAttribute('href', "myPage.html?user=" + params.get("user"));
